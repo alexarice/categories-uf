@@ -90,7 +90,7 @@ private
   variable
     ℓ : Level
 
-module YonedaStrict (C : Precategory ℓ ℓ) ⦃ C-cat : isCategory C ⦄ where
+module _ (C : Precategory ℓ ℓ) ⦃ C-cat : isCategory C ⦄ where
   open Functor
   open Precategory C
   open StrictNatTrans
@@ -135,21 +135,19 @@ module YonedaStrict (C : Precategory ℓ ℓ) ⦃ C-cat : isCategory C ⦄ where
     yoEquiv : StrictNatTrans C (yo x) F ≃ F .F-ob x .fst
     yoEquiv = isoToEquiv yoIso
 
-  module _ where
-    open Precategory
 
-    PSImage : Precategory ℓ ℓ
-    PSImage .ob = C .ob
-    PSImage .Hom[_,_] x y = StrictNatTrans C (yo x) (yo y)
-    PSImage .id x = idSNT C (yo x)
-    PSImage ._⋆_ = seqSNT C
-    PSImage .⋆IdL f = refl
-    PSImage .⋆IdR f = refl
-    PSImage .⋆Assoc f g h = refl
+  PSImage : Precategory ℓ ℓ
+  PSImage .Precategory.ob = ob
+  PSImage .Precategory.Hom[_,_] x y = StrictNatTrans C (yo x) (yo y)
+  PSImage .Precategory.id x = idSNT C (yo x)
+  PSImage .Precategory._⋆_ = seqSNT C
+  PSImage .Precategory.⋆IdL f = refl
+  PSImage .Precategory.⋆IdR f = refl
+  PSImage .Precategory.⋆Assoc f g h = refl
 
-    is-cat : isCategory PSImage
-    is-cat .isSetHom α β p q = isoInvInjective (equivToIso (makeSNTPathEquiv C α β)) p q
-                                               (isSetΠ2 (λ x y → isSetHom C-cat) (α .SN-ob) (β .SN-ob) _ _)
+  is-cat : isCategory PSImage
+  is-cat .isSetHom α β p q = isoInvInjective (equivToIso (makeSNTPathEquiv C α β)) p q
+                                             (isSetΠ2 (λ x y → isSetHom C-cat) (α .SN-ob) (β .SN-ob) _ _)
 
   YO-Res : Functor C (PSImage)
   YO-Res .F-ob x = x
